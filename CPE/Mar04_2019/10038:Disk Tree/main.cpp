@@ -1,65 +1,60 @@
 #include <iostream>
 #include <cstdio>
-#include <string>
 #include <cstring>
+#include <string>
 #include <vector>
 
 using namespace std;
-vector<string> inputo;
-string tempo;
-int numPaths =0;
 
-string getFirstLevel(string dir){
-    //printf("About to print it:\n");
-    if(dir.find('\\') == string::npos)
-        return dir;
-    //cout << "\t"<<dir.substr(0,dir.find('\\'))<<endl;
-    return dir.substr(0,dir.find('\\'));
+struct troo{
+    string identifier;
+    vector<troo*> children;
+};
+vector<troo*> mainList;
+string getMain(string inputo){
+    int pos =inputo.find('\\');
+    return (pos == string::npos) ? inputo :inputo.substr(0,pos);
 }
-string removeFirstLevel(string dir){
-    //printf("About to print it after:\n");
-    //cout << "\t"<<dir.substr(dir.find('\\')+1,string::npos)<<endl;
-    return dir.substr(dir.find('\\')+1,string::npos);
+string getRest(string inputo){
+    int pos =inputo.find('\\');
+    return (pos == string::npos) ? inputo :inputo.substr(pos+1,string::npos);
 }
-void printer(vector<string> curStr,int level){
-    if(curStr.empty()) return;
-    string aimed = getFirstLevel(*curStr.begin());
-    for(int i =0;i<level;i++){
-        cout <<' ';
-    }
-    cout <<aimed<<endl;
-    cin.get();
-    while(!curStr.empty()){
-        vector<string> nextLevel;
-        vector<string>::iterator it = curStr.begin();
-        for(;it!=curStr.end();it++){
-            if(getFirstLevel(*it) == aimed){
-                nextLevel.push_back(removeFirstLevel(*it));
-                cout <<" For : "<<getFirstLevel(*it)<<endl;
-                cout << "\tPushing Value : "<<removeFirstLevel(*it)<<endl;
-            }            
+void createMainList(vector<string> inputo){
+    string aim;
+    vector<vector<string>::iterator> toTake;
+    vector<string>::iterator it;
+
+    troo* newTroo;
+    while(!inputo.empty()){
+        it = inputo.begin();
+        aim = getMain(*it);
+        newTroo = new troo;
+        newTroo->identifier = aim;
+        cout << "Aim is : "<<aim<<endl;
+        mainList.push_back(new troo())
+        for(;it!=inputo.end();it++){
+            toTake.clear();
+            if(getMain(*it) ==  aim){
+                toTake.push_back(it);
+                createMainList();
+            }
         }
-        it = nextLevel.begin();
-        for(;it!=nextLevel.end();it++){
-            curStr.erase(it);
+        vector<vector<string>::iterator>::iterator ito = toTake.begin();
+        for(;ito!=toTake.end();ito++){
+            mainList.erase(*ito);
         }
-        cout << "Do we even make it here?"<<endl;
-        printer(nextLevel,level+1);
     }
-
 }
-
-
 int main(){
-
-    cin >> numPaths;
-    for(;numPaths!=0;numPaths--){
+    
+    int amount = 0;
+    cin >> amount;
+    vector<string> inputo;
+    string tempo;
+    for(;amount!=0;amount--){
         cin >> tempo;
         inputo.push_back(tempo);
     }
-    printer(inputo,0);
-    //we now go one by one 
 
     return 0;
 }
-
